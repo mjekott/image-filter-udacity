@@ -30,7 +30,7 @@ import { deleteLocalFiles, filterImageFromURL } from "./util/util";
 
   //! END @TODO1
   app.get("/filteredimage", async (req: Request, res: Response) => {
-    const imageUrl: string = req.query.image_url;
+    const imageUrl: string = req.query.image_url as string;
     if (!imageUrl) {
       res.status(400).send("image url not specify. Please specify image url");
     }
