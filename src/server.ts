@@ -32,18 +32,22 @@ import { deleteLocalFiles, filterImageFromURL } from "./util/util";
   app.get("/filteredimage", async (req: Request, res: Response) => {
     const imageUrl: string = req.query.image_url as string;
     if (!imageUrl) {
-      res.status(400).send("image url not specify. Please specify image url");
+      res.status(422).json({
+        message: "image url not specify. Please specify image url",
+      });
     }
     try {
       const filteredImage: string = await filterImageFromURL(imageUrl);
       res.status(200).sendFile(filteredImage);
-      console.log("imagepath:", filteredImage);
       // deleting the image after response is sent
       res.on("finish", function () {
         deleteLocalFiles([filteredImage]);
       });
-    } catch (error) {
-      res.status(422).send(error);
+    } catch (error: unknown) {
+      const err = error as Error;
+      res.status(422).json({
+        message: err.message,
+      });
     }
   });
   // Root Endpoint
